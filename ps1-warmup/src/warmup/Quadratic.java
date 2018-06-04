@@ -12,19 +12,19 @@ public class Quadratic {
      * @param c constant term.  Requires that a, b, and c are not ALL zero.
      * @return all integers x such that ax^2 + bx + c = 0.
      */
-    public static Set<Double> roots(int a, int b, int c) {
-    	Set<Double> set = new HashSet<Double>();
-    	double t=b*b-4*a*c;  
+    public static Set<Integer> roots(int a, int b, int c) {
+    	Set<Integer> set = new HashSet<Integer>();
+    	int t=b*b-4*a*c;  
     	
     	
         if(t>0) {  
-            double r1=(Math.sqrt(t)-b)*1.0/(2*a);  
-            double r2=(-(Math.sqrt(t))-b)*1.0/(2*a); 
+            int r1=(int) ((int)(Math.sqrt(t)-b)*1.0/(2*a));  
+            int r2=(int) ((-(Math.sqrt(t))-b)*1.0/(2*a)); 
             set.add(r1);
             set.add(r2);
         }  
         else if(t==0)  {
-        	double r1 =(Math.sqrt(t)-b)*1.0/(2*a);
+        	int r1 =(int) ((Math.sqrt(t)-b)*1.0/(2*a));
         	set.add(r1);
         	}
         else  
@@ -45,7 +45,7 @@ public class Quadratic {
      */
     public static void main(String[] args) {
         System.out.println("For the equation x^2 - 4x + 3 = 0, the possible solutions are:");
-        Set<Double> result = roots(1, -4, 3);
+        Set<Integer> result = roots(1, -4, 3);
         System.out.println(result);
     }
 
