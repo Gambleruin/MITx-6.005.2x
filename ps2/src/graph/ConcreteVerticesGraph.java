@@ -13,12 +13,20 @@ import java.util.Set;
  * 
  * <p>PS2 instructions: you MUST use the provided rep.
  */
-public class ConcreteVerticesGraph implements Graph<String> {
+public class ConcreteVerticesGraph<L> implements Graph<L> {
     
-    private final List<Vertex> vertices = new ArrayList<>();
+    private final List<Vertex<L>> vertices = new ArrayList<>();
     
     // Abstraction function:
     //   TODO
+    private int indexInVertices(L label){
+        for(int i = 0; i < vertices.size(); i++){
+            if ( vertices.get(i).getLabel().equals(label) ) {
+                return i;
+            }
+        }
+        return -1;
+    }
     // Representation invariant:
     //   TODO
     // Safety from rep exposure:
@@ -27,9 +35,18 @@ public class ConcreteVerticesGraph implements Graph<String> {
     // TODO constructor
     
     // TODO checkRep
+    private void checkRep(){        
+        assert vertices().size() == vertices.size();
+    }
     
-    @Override public boolean add(String vertex) {
-        throw new RuntimeException("not implemented");
+    @Override public boolean add(L vertex) {
+    	if ( vertices().contains(vertex) ) {
+            return false;
+        }
+        Vertex<L> vertexObj = new Vertex<>(vertex);    
+        final boolean vertexAdded = vertices.add(vertexObj);
+        checkRep();
+        return vertexAdded;
     }
     
     @Override public int set(String source, String target, int weight) {

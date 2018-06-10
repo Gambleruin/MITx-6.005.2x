@@ -14,10 +14,10 @@ import java.util.Set;
  * 
  * <p>PS2 instructions: you MUST use the provided rep.
  */
-public class ConcreteEdgesGraph implements Graph<String> {
+public class ConcreteEdgesGraph implements Graph<L> {
     
-    private final Set<String> vertices = new HashSet<>();
-    private final List<Edge> edges = new ArrayList<>();
+    private final Set<L> vertices = new HashSet<>();
+    private final List<Edge<L>> edges = new ArrayList<>();
     
     // Abstraction function:
     //   TODO
@@ -31,7 +31,7 @@ public class ConcreteEdgesGraph implements Graph<String> {
     // TODO checkRep
     
     @Override public boolean add(String vertex) {
-        throw new RuntimeException("not implemented");
+        
     }
     
     @Override public int set(String source, String target, int weight) {
