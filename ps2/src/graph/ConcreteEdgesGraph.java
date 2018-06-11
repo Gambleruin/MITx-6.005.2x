@@ -12,6 +12,77 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 /**
+ * TODO specification
+ * Immutable.
+ * This class is internal to the rep of ConcreteEdgesGraph.
+ * 
+ * <p>PS2 instructions: the specification and implementation of this class is
+ * up to you.
+ */
+class Edge<L> {
+	private final L source;
+    private final L target;
+    private final int weight;
+    
+    // TODO fields
+    
+    // Abstraction function:
+    //   TODO
+    // Representation invariant:
+    //   TODO
+    // Safety from rep exposure:
+    //   TODO
+    
+    // TODO constructor
+    public Edge(final L source, final L target, final int weight) {
+    	assert weight >0;
+    	
+    	this.source =source;
+    	this.target =target;
+    	this.weight =weight;
+    	checkRep();
+    }
+    
+    // TODO checkRep
+	private void checkRep() {
+		assert source !=null;
+		assert target !=null;
+		assert weight >0;
+	}
+    
+	
+    // TODO methods
+    
+    // TODO toString()
+	
+	//observers
+    /** Returns this Edge's source*/   
+    public L getSource(){
+        return source;
+    }
+    /**Returns this Edge's target*/
+    public L getTarget(){
+        return target;
+    }
+    /**Returns this Edge's weight*/
+    public int getWeight(){
+        return weight;
+    }
+    
+    //producers
+    /**
+     * Changes the weight of this Edge
+     * 
+     * @param newWeight an int, requires newWeight > 0
+     * @return a new Edge with newWeight 
+     */
+    public Edge<L> setWeight(int newWeight){
+        checkRep();
+        return new Edge<>(source, target, newWeight);
+    }
+}
+
+/**
  * An implementation of Graph.
  * 
  * <p>PS2 instructions: you MUST use the provided rep.
@@ -155,73 +226,4 @@ public class ConcreteEdgesGraph<L> implements Graph<L> {
     
 }
 
-/**
- * TODO specification
- * Immutable.
- * This class is internal to the rep of ConcreteEdgesGraph.
- * 
- * <p>PS2 instructions: the specification and implementation of this class is
- * up to you.
- */
-class Edge<L> {
-	private final L source;
-    private final L target;
-    private final int weight;
-    
-    // TODO fields
-    
-    // Abstraction function:
-    //   TODO
-    // Representation invariant:
-    //   TODO
-    // Safety from rep exposure:
-    //   TODO
-    
-    // TODO constructor
-    public Edge(final L source, final L target, final int weight) {
-    	assert weight >0;
-    	
-    	this.source =source;
-    	this.target =target;
-    	this.weight =weight;
-    	checkRep();
-    }
-    
-    // TODO checkRep
-	private void checkRep() {
-		assert source !=null;
-		assert target !=null;
-		assert weight >0;
-	}
-    
-	
-    // TODO methods
-    
-    // TODO toString()
-	
-	//observers
-    /** Returns this Edge's source*/   
-    public L getSource(){
-        return source;
-    }
-    /**Returns this Edge's target*/
-    public L getTarget(){
-        return target;
-    }
-    /**Returns this Edge's weight*/
-    public int getWeight(){
-        return weight;
-    }
-    
-    //producers
-    /**
-     * Changes the weight of this Edge
-     * 
-     * @param newWeight an int, requires newWeight > 0
-     * @return a new Edge with newWeight 
-     */
-    public Edge<L> setWeight(int newWeight){
-        checkRep();
-        return new Edge<>(source, target, newWeight);
-    }
-}
+
