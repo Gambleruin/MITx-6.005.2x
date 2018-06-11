@@ -178,7 +178,13 @@ class Vertex<L> {
 	}
 		
     // TODO toString()
-    
+	@Override public String toString(){
+        return String.format(
+                "%s -> %s \n" +
+                "%s <- %s",
+                this.label.toString(), this.targets,
+                this.label.toString(), this.sources);
+    }
 }
 
 /**
@@ -206,10 +212,18 @@ public class ConcreteVerticesGraph<L> implements Graph<L> {
     //   TODO
     
     // TODO constructor
+    public ConcreteVerticesGraph() {
+    }
     
     // TODO checkRep
     private void checkRep(){        
         assert vertices().size() == vertices.size();
+    }
+    
+    @Override public Set<L> vertices() {
+        return vertices.stream()
+                .map(Vertex::getLabel)
+                .collect(Collectors.toSet());
     }
     
     @Override public boolean add(L vertex) {
@@ -222,24 +236,78 @@ public class ConcreteVerticesGraph<L> implements Graph<L> {
         return vertexAdded;
     }
     
-    @Override public int set(String source, String target, int weight) {
-        throw new RuntimeException("not implemented");
+    @Override public int set(L source, L target, int weight) {
+        assert source != target;
+        assert weight >= 0;
+        
+        final Vertex<L> sourceVertex;
+        final Vertex<L> targetVertex;
+        
+        Set<L> verticeLabels =vertices();
+        if ( verticeLabels.contains(source) ) {
+            int sourceIndex = indexInVertices(source);
+            sourceVertex = vertices.get(sourceIndex);
+        } else {
+            sourceVertex = new Vertex<>(source);
+            vertices.add(sourceVertex);
+        }
+        
+        if ( verticeLabels.contains(target) ) {
+            int targetIndex = indexInVertices(target);
+            targetVertex = vertices.get(targetIndex);
+        } else {
+            targetVertex = new Vertex<>(target);
+            vertices.add(targetVertex);
+        }
+        
+        int sourcePrevWeight = sourceVertex.setTarget(target, weight);
+        int targetPrevWeight = targetVertex.setSource(source, weight);
+        assert sourcePrevWeight == targetPrevWeight;
+        
+        checkRep();
+        return sourcePrevWeight;
+        
     }
     
-    @Override public boolean remove(String vertex) {
-        throw new RuntimeException("not implemented");
+    
+    @Override public boolean remove(L vertex) {
+        //sanity check
+    	if(! (vertices().contains(vertex)) ) {
+    		return false;
+    	}
+    	int vertexIndex =indexInVertices(vertex);
+    	assert vertexIndex != -1;
+    	// remove both from vertex class and current class
+    	final Vertex<L> removedVertex =vertices.remove(vertexIndex);
+    	assert removedVertex.getLabel() ==vertex;
+    	
+    	for(Vertex<L> v: vertices) {
+    		v.remove(vertex);
+    	}
+    	return removedVertex !=null;
+    	
     }
     
-    @Override public Set<String> vertices() {
-        throw new RuntimeException("not implemented");
+    
+    /* Returns an immutable view of source vertices to a target*/
+    @Override public Map<L, Integer> sources(L target) {
+        final int targetIndex =indexInVertices(target);
+        if(targetIndex <0) {
+        	return Collections.emptyMap();
+        }
+        Vertex<L>targetVertex =vertices.get(targetIndex);
+        return Collections.unmodifiableMap(targetVertex.getSources());
     }
     
-    @Override public Map<String, Integer> sources(String target) {
-        throw new RuntimeException("not implemented");
-    }
-    
-    @Override public Map<String, Integer> targets(String source) {
-        throw new RuntimeException("not implemented");
+    /* Returns an immutable view of target vertices from a source */
+    @Override public Map<L, Integer> targets(L source) {
+    	final int sourceIndex = indexInVertices(source);
+        if ( sourceIndex < 0 ) {
+            return Collections.emptyMap();
+        }
+        Vertex<L> sourceVertex = vertices.get(sourceIndex);
+        
+        return Collections.unmodifiableMap(sourceVertex.getTargets());
     }
     
     // TODO toString()
