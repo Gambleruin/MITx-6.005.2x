@@ -31,7 +31,7 @@ public class ConcreteEdgesGraph<L> implements Graph<L> {
     	for(int i =0; i<edges.size(); i++) {
     		Edge<L> edge =edges.get(i);
     		if(edge.getSource().equals(source)&&
-    				edge.getTarget().eqauls(target)) {
+    				edge.getTarget().equals(target)) {
     			return i;
     		}
     	}
@@ -98,29 +98,60 @@ public class ConcreteEdgesGraph<L> implements Graph<L> {
     
     
     @Override public boolean remove(L vertex) {
-        final int initialSizeEdges =edges.size();
         final int initialSizeVertices =vertices.size();
+        final int initialSizeEdges =edges.size();
         
+       
         Predicate<Edge<L>> vertexInEdge =(Edge<L> edge)->
         	((edge.getSource().equals(vertex))||
-        			(edge.getTarget().eqauls(vextex)))
-        	
+        			(edge.getTarget().equals(vertex)));
+                	
         Predicate<L> vertexInVertices =v->v.equals(vertex);
+        
+        boolean removedEdge =edges.removeIf(vertexInEdge);
+        boolean removedVertice =vertices.removeIf(vertexInVertices);
+        
+        if(removedVertice) {
+        	assert initialSizeVertices !=vertices.size();
+        	assert initialSizeVertices -1 ==vertices.size();
+        	
+        }
+        if(removedEdge) {
+        	assert initialSizeEdges !=edges.size();
+        	assert removedVertice;
+        }
+        checkRep();
+        return initialSizeVertices -1 ==vertices.size();
     }
     
-    @Override public Set<String> vertices() {
-        throw new RuntimeException("not implemented");
+    /* returns an read-only view of this concreteEdgesGraph's vertices*/
+    @Override public Set<L> vertices() {
+        return Collections.unmodifiableSet(vertices);
     }
     
-    @Override public Map<String, Integer> sources(String target) {
-        throw new RuntimeException("not implemented");
+    /* returns a map of a target's sources */
+    @Override public Map<L, Integer> sources(L target) {
+        return edges.stream()
+        		.filter(edge->edge.getTarget().equals(target))
+        		.collect(Collectors.toMap(Edge::getSource, Edge::getWeight));
     }
     
-    @Override public Map<String, Integer> targets(String source) {
-        throw new RuntimeException("not implemented");
+    /* Returns a map of a source's targets */
+    @Override public Map<L, Integer> targets(L source) {
+        return edges.stream()
+        		.filter(edge->edge.getSource().equals(source))
+        		.collect(Collectors.toMap(Edge::getTarget, Edge::getWeight));
     }
     
     // TODO toString()
+    @Override public String toString() {
+    	if(edges.isEmpty() ) {
+    		return "Empty Graph";
+    	}
+    	return edges.stream()
+    			.map(edge->edge.toString())
+    			.collect(Collectors.joining("\n"));
+    }
     
 }
 
@@ -147,6 +178,14 @@ class Edge<L> {
     //   TODO
     
     // TODO constructor
+    public Edge(final L source, final L target, final int weight) {
+    	assert weight >0;
+    	
+    	this.source =source;
+    	this.target =target;
+    	this.weight =weight;
+    	checkRep();
+    }
     
     // TODO checkRep
 	private void checkRep() {
@@ -155,6 +194,7 @@ class Edge<L> {
 		assert weight >0;
 	}
     
+	
     // TODO methods
     
     // TODO toString()
@@ -173,7 +213,7 @@ class Edge<L> {
         return weight;
     }
     
-  //producers
+    //producers
     /**
      * Changes the weight of this Edge
      * 
